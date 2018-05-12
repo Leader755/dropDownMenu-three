@@ -4,23 +4,149 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <style>
-        .box{
-            width: 200px;
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        a{
+            text-decoration: none;
+            font-size: 12px;
+            color: #666;
+        }
+        ul,li{
+            list-style: none;
+        }
+        .container{
+            width: 300px;
             margin: 50px auto;
+            background-color: #f1f1f1;
+            box-shadow: 0 1px 3px #666;
+            border-radius: 3px;
+        }
+        .tabs{
+            width: 300px;
+            height: 30px;
+            border-top: 1px solid #4F94CD;
+            border-bottom: 1px solid #ccc;
+        }
+        .tabs li{
+            float: left;
+            height: 30px;
+            line-height: 30px;
+            border-right: 1px solid #ccc;
+        }
+        .tabs li a{
+            display: block;
+            width: 60px;
+            text-align: center;
+        }
+        .tabs li.active a{
+            background-color: #fff;
+            height: 31px;
+            color: #63B8FF;
+        }
+
+        .tabs-content{
+            background-color: #fff;
+            padding: 20px;
+        }
+        .tabs-content > div{
+            display: none;
+        }
+        .tabs-content > div.active{
+            display: block;
+        }
+        .tabs-content .item{
+            overflow: hidden;
+            border-top:1px dashed #CCCCCC;
+            padding: 10px 0;
+        }
+        .item div{
+            float: left;
+        }
+        .item .item-a{
+            width: 40px;
+            text-align: center;
+            line-height: 60px;
+            font-size: 12px;
+        }
+        .item .item-b{
+            width: 220px;
+        }
+        .item .item-b a{
+            float: left;
+            padding: 5px 10px;
+            /*background-color: #f1f1f1;*/
+            border-radius: 5px;
+        }
+        .item .item-b a:hover{
+            background-color:#EBEBEB;
+            color: #A4D3EE;
+        }
+        .item .item-b a.active{
+            background-color: #63B8FF;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <div style="text-align: center"><a href="index.html">点我返回</a></div>
-    <div class="box">
-        <!--省份 或者 直辖市-->
-        <select id="province"></select>
-        <!--市-->
-        <select id="city"></select>
-        <!--区 / 县-->
-        <select  id="area"></select>
+
+    <div class="container">
+       
+        <ul class="tabs">
+            <li class="active"><a href="javascript:void(0)">省份</a></li>
+            <li><a href="javascript:void(0)">城市</a></li>
+            <li><a href="javascript:void(0)">县区</a></li>
+        </ul>
+        <div class="tabs-content">
+            <div id="province" class="active"></div>
+            <div id="city">
+                这是城市
+            </div>
+            <div id="area">
+                这是县区
+            </div>
+        </div>
+         <div style="text-align:center"><a href="index1.html" >点我跳转</a></div>
     </div>
-<script src="js/jquery-v1.10.2.min.js"></script>
-<script src="js/index.js"></script>
+    <script src="js/jquery-v1.10.2.min.js"></script>
+    <script src="data/picker.data.js"></script>
+    <script>
+        $(".tabs li").click(function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            var index = $(this).index();
+            $(".tabs-content>div").eq(index).show().siblings().hide();
+        });
+//        console.log(citys['86']['A-G']);
+
+        var p = citys['86'];//获取省份信息
+
+         var htmlsStr = '';
+        //生成省份数据
+        for(index in p){//遍历数组和对象
+            var item = ' <div class="item"> <div class="item-a">'+index+'</div> <div class="item-b">';
+           for(var i=0;i<p[index].length;i++){
+               item +='<a href="javascript:void(0)" data-code="'+p[index][i].code+'">'+p[index][i].address+'</a>';
+           }
+            item +='</div></div>';
+//            console.log(p[index]);
+            htmlsStr += item;
+        }
+        //插入到容器
+        $(".tabs-content #province").html(htmlsStr);
+
+
+        $(".tabs-content").on('click','#province a',function(){
+
+//            $(this).addClass('active').siblings().removeClass();
+            $(this).parents('#province').find('a').removeClass('active').end().end().addClass('active');
+//            console.log($(this).parents('#province').find('a').end().end());
+           //使用data() 获取自定义属性
+            var code = $(this).data('code');
+//            alert(code);
+            console.log(citys[code]);//显示二级城市
+//            console.log(citys['340100']);//获取三级城市
+        })
+    </script>
 </body>
 </html>
